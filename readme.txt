@@ -3,7 +3,7 @@ Contributors: chaozh
 Donate link: http://www.chaozh.com/wordpress-plugin-post-series-publish/
 Tags: post, category, series, taxonomy
 Tested up to: 3.5
-Stable tag: 1.3
+Stable tag: 2.0
 Requires at least: 3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
