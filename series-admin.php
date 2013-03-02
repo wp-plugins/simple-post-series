@@ -65,7 +65,8 @@ function series_addbuttons() {
 
     // Only load the necessary scripts if the user is on the post/page editing admin pages
     if ( in_array( basename( $_SERVER['PHP_SELF'] ), array( 'post-new.php', 'page-new.php', 'post.php', 'page.php' ) ) ) {
-        wp_enqueue_style('jquery-ui-dialog', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css');
+        //wp_enqueue_style( 'wp-jquery-ui-dialog' ); //default style is too ugly
+        wp_enqueue_style('jquery-ui-dialog', SERIES_URL . '/inc/jquery-ui.css', array(), '1.8.2');
         wp_enqueue_script( 'jquery-ui-dialog' );
         
         wp_enqueue_style( 'series-dialog-styles' );
@@ -386,9 +387,9 @@ function series_settings_page(){
 
 	<form action="options.php" method="post">
 		<?php 
-        //adds options to settings page				
+        //adds options_group on settings page				
 		settings_fields( SERIES. '_options' );
-        //display settings sections				
+        //display all settings sections	in a page			
 		do_settings_sections(  SERIES.'_settings' );
 		?>
 		
