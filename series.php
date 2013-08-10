@@ -223,7 +223,7 @@ class Post_Series_Widget extends WP_Widget {
             'classname' => 'widget_' . SERIES,
             'description' => __( "A simple widget to display post series.", SERIES_BASE) 
         );
-        $this->WP_Widget( 'widget_' . SERIES, $name = __('Post Series', SERIES_BASE), $widget_ops);	
+        $this->WP_Widget( 'widget_' . SERIES, __('Post Series', SERIES_BASE), $widget_ops);	
         
         add_action( 'save_post', array(&$this, 'flush_widget_cache') );
 		add_action( 'deleted_post', array(&$this, 'flush_widget_cache') );
@@ -248,9 +248,9 @@ class Post_Series_Widget extends WP_Widget {
         $options = get_option( SERIES.'_options' );
         $series_arg = array(
         
-            "id" => $instance["id"],
-            "limit" => $instance["limit"],
-            "show_future" => $instance["show_future"],
+            "id" => intval($instance["id"]),
+            "limit" => intval($instance["limit"]),
+            "show_future" => isset($instance["show_future"])?$instance["show_future"]:false,
             "class_prefix" => $instance["class_prefix"], 
             "show_nav" => false,
             "title_format" => ''
@@ -258,13 +258,12 @@ class Post_Series_Widget extends WP_Widget {
         );
         $series_arg = $series_arg + $options;
         
-		$widget_title = apply_filters( 'widget_title', $instance['widget_title'] );
-        
         ob_start();	
         extract( $args, EXTR_SKIP );
         	
 		echo $before_widget;
-		echo $before_title . $widget_title . $after_title;
+        //if ( $instance['widget_title'] )
+        echo $before_title . apply_filters( 'widget_title', $instance['widget_title'] ) . $after_title;
     	echo series_display($series_arg);
         echo $after_widget;
         
