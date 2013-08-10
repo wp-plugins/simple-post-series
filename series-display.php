@@ -1,12 +1,11 @@
 <?php 
-function series_get_thumbnail_img(){
-    global $post;
-    if (has_post_thumbnail($post->ID)) {
+function series_get_thumbnail_img($the_post){
+    if (has_post_thumbnail($the_post->ID)) {
 		$attr = array(
-			'alt' => esc_attr(wptexturize($post->post_title)),
+			'alt' => esc_attr(wptexturize($the_post->post_title)),
 			'title' => false
 		);
-		$img = get_the_post_thumbnail($post->ID, 'thumbnail', $attr);
+		$img = get_the_post_thumbnail($the_post->ID, 'thumbnail', $attr);
 		return $img;
 	}
     //$img = '<img src="'. esc_attr(series_get_default_thumbnail_url($the_post->ID)) . '" alt="' . esc_attr(wptexturize($the_post->post_title)) . '" />';
@@ -21,7 +20,7 @@ function series_get_adjacent_post_nav($format, $link, $post, $previous = true){
 	$text = $previous ? __('Previous Post') : __('Next Post');
     
     $rel = $previous ? 'prev' : 'next';
-   	$string = '<a href="'.get_permalink( $post->ID, true ).'" rel="'.$rel.'" title="'.$title.'">';
+   	$string = '<a href="'.get_permalink( $post->ID, false ).'" rel="'.$rel.'" title="'.$title.'">';
 	$link = str_replace('%title', $title, $link);
     $link = str_replace('%rel', $text, $link);
     
@@ -29,6 +28,11 @@ function series_get_adjacent_post_nav($format, $link, $post, $previous = true){
     $format = str_replace('%link', $link, $format);
     
     return $format;
+}
+
+function series_get_the_excerpt( $the_post ) {
+
+	return $the_post->post_excerpt;
 }
 
 function series_display($series_arg){
@@ -109,8 +113,8 @@ function series_display($series_arg){
 			}
             $iterator++;
             
-            $output .= ($show_thumbnail?'<span class="'.$class_prefix.'-item-thumbnail">'.series_get_thumbnail_img().'</span>':'');
-            $output .= ($show_excerpt?'<span class="'.$class_prefix.'-item-excerpt">'.get_the_excerpt().'</span>':'');
+            $output .= ($show_thumbnail?'<span class="'.$class_prefix.'-item-thumbnail">'.series_get_thumbnail_img($the_post).'</span>':'');
+            $output .= ($show_excerpt?'<span class="'.$class_prefix.'-item-excerpt">'.series_get_the_excerpt($the_post).'</span>':'');
             
             $output .= '</li>';
 		}
@@ -124,24 +128,24 @@ function series_display($series_arg){
             }
             
             if($next_post){
-                $output .= '<span class="'.$class_prefix.'-nav-next">'. series_get_adjacent_post_nav('%link &raquo;', '%rel', $prev_post, false). '</span>';
+                $output .= '<span class="'.$class_prefix.'-nav-next">'. series_get_adjacent_post_nav('%link &raquo;', '%rel', $next_post, false). '</span>';
             }
             $output .= '</nav>';
         }
         //close section tag...
         $output .= '</'.$series_wrap.'>';
         // Create the title if the "title" attribute exists
-        if($title_format){	
-            if(!$title) 
-                $title = $term->name;
+        $link = sprintf('<a href="%1$s">%2$s</a>', $tax_link, $title?$title:$term->name);
+        if($current){	  
             $title_format = str_replace( '%current', $current, $title_format );
             $title_format = str_replace( '%count', $count, $title_format );
-            $link = sprintf('<a href="%1$s">%2$s</a>', $tax_link, $title);
             $title_format = str_replace( '%link', $link, $title_format );
             if( $show_all ){
                 $title_format .= '<a href="JavaScript:void(0);" class="show-all">'.__('Show All', SERIES_BASE).'</a>';
             }
             $title_output = '<'.$title_wrap.' class="'.$class_prefix.'-title">'.$title_format.'</'.$title_wrap.'>';
+        }else{
+            $title_output = '<'.$title_wrap.' class="'.$class_prefix.'-title">'.$link.'</'.$title_wrap.'>';
         }
 		// display the title first
 		$output = $section_output.$title_output.$output;
