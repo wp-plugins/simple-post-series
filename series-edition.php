@@ -30,7 +30,7 @@ function series_months_dropdown( $post_type, $selected ) {
 
 } // End of months_dropdown
 
-function series_edition_menu(){
+function series_edition_menu() {
     global $page_hooks;
     //deal with custom type!
     $post_types = series_posttype_support();
@@ -187,7 +187,8 @@ function series_edition_display_posts($args, $box){
 				'<a href="'.$url_page.'" '.$class.'>'.$type.'</a></li>';
     }
     
-    $filter_archives   = series_months_dropdown($post_type, $date);
+    $filter_archives = series_months_dropdown($post_type, $date);
+    $filter_categories = '';
     if($post_type == 'post'){
         $filter_categories = wp_dropdown_categories( array(
 			'show_option_all'    => __('View all categories'),
